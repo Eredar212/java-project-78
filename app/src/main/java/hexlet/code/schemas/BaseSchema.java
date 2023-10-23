@@ -2,11 +2,11 @@ package hexlet.code.schemas;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class BaseSchema<T> {
-    protected List<String> needCheckMethods = new ArrayList<>();
+    protected Set<String> needCheckMethods = new HashSet<>();
 
     @SuppressWarnings("unchecked")
     public final T required() {
