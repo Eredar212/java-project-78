@@ -5,12 +5,13 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaseSchema {
+public abstract class BaseSchema<T> {
     protected List<String> needCheckMethods = new ArrayList<>();
 
-    public BaseSchema required() {
+    @SuppressWarnings("unchecked")
+    public T required() {
         needCheckMethods.add("checkRequired");
-        return this;
+        return (T) this;
     }
 
     private boolean checkRequired(Object tested) {
@@ -34,7 +35,7 @@ public class BaseSchema {
         if (!needCheckMethods.isEmpty()) {
             for (String m : needCheckMethods) {
                 Method method = this.getSchemaMethod(m);
-                if (m == null) {
+                if (method == null) {
                     throw new RuntimeException("Unexpected method: " + m);
                 }
                 try {
