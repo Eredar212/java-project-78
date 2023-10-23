@@ -23,7 +23,7 @@ public final class NumberSchema extends BaseSchema<NumberSchema> {
     private boolean checkRange(Object tested) {
         return (Integer) tested >= minRange && (Integer) tested <= maxRange;
     }
-    private static boolean checkInstance(Object o) {
+    protected boolean checkInstance(Object o) {
         return o instanceof Integer || o == null;
     }
 }

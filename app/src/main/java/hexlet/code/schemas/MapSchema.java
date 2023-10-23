@@ -31,7 +31,7 @@ public final class MapSchema extends BaseSchema<MapSchema> {
         }
         return true;
     }
-    private static boolean checkInstance(Object o) {
+    protected boolean checkInstance(Object o) {
         return o instanceof Map || o == null;
     }
 }

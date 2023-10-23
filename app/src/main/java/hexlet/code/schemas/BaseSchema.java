@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaseSchema<T> {
+public abstract class BaseSchema<T> {
     protected List<String> needCheckMethods = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
@@ -17,6 +17,9 @@ public class BaseSchema<T> {
     private boolean checkRequired(Object tested) {
         return tested != null;
     }
+
+    //в каждом классе расширения должен быть переопределен метод checkInstance
+    protected abstract boolean checkInstance(Object o);
 
     public final boolean isValid(Object tested) {
         try {

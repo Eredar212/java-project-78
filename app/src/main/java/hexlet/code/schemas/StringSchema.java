@@ -21,7 +21,7 @@ public final class StringSchema extends BaseSchema<StringSchema> {
     private boolean checkContains(Object tested) {
         return containedTest.isEmpty() || ((String) tested).contains(containedTest);
     }
-    private static boolean checkInstance(Object o) {
+    protected boolean checkInstance(Object o) {
         return o instanceof String || o == null;
     }
     //для строки метод checkRequired переопределен, потому что пустая строка тоже не должна проходить условие required
