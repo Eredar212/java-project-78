@@ -4,32 +4,32 @@ import java.util.Map;
 
 public class MapSchema extends BaseSchema {
     private Integer sizeof;
-    Map<String, BaseSchema> shape;
+    private Map<String, BaseSchema> shape;
 
     public MapSchema sizeof(int size) {
         sizeof = size;
+        needCheckMethods.add("checkSizeOf");
         return this;
     }
-
     public void shape(Map<String, BaseSchema> schemas) {
         this.shape = schemas;
+        needCheckMethods.add("checkShapeSchemas");
+    }
+
+    private boolean checkSizeOf(Object tested) {
+        return sizeof == null || tested == null || ((Map) tested).size() == sizeof;
     }
     @SuppressWarnings("unchecked")
-    public boolean isValid(Object o) {
-        if (!(o instanceof Map) && o != null) {
-            return false;
-        }
-        if (o == null && required) {
-            return false;
-        }
-        if (o != null && shape != null) {
-            Map<String, Object> schemas = (Map<String, Object>) o;
-            for (String key : this.shape.keySet()) {
-                if (!this.shape.get(key).isValid(schemas.get(key))) {
-                    return false;
-                }
+    private boolean checkShapeSchemas(Object tested) {
+        Map<String, Object> schemas = (Map<String, Object>) tested;
+        for (String key : this.shape.keySet()) {
+            if (!this.shape.get(key).isValid(schemas.get(key))) {
+                return false;
             }
         }
-        return sizeof == null || (o != null && ((Map) o).size() == sizeof);
+        return true;
+    }
+    private static boolean checkInstance(Object o) {
+        return o instanceof Map || o == null;
     }
 }

@@ -1,37 +1,31 @@
 package hexlet.code;
 
 public class StringSchema extends BaseSchema {
-    //private boolean required = false;
     private Integer minLength;
     private String containedTest = "";
 
-    /*public StringSchema required() {
-        this.required = true;
-        return this;
-    }*/
-
     public StringSchema minLength(int length) {
         this.minLength = length;
+        needCheckMethods.add("checkMinLength");
         return this;
     }
-
     public StringSchema contains(String text) {
         this.containedTest = text;
+        needCheckMethods.add("checkContains");
         return this;
     }
 
-    @Override
-    public boolean isValid(Object tested) {
-        if (!(tested instanceof String) && tested != null) {
-            return false;
-        }
-        String testedText = tested == null ? "" : tested.toString();
-        if (testedText.isEmpty() && required) {
-            return false;
-        }
-        if (this.minLength != null && testedText.length() < this.minLength) {
-            return false;
-        }
-        return containedTest.isEmpty() || testedText.contains(containedTest);
+    private boolean checkMinLength(Object tested) {
+        return ((String) tested).length() >= this.minLength;
+    }
+    private boolean checkContains(Object tested) {
+        return containedTest.isEmpty() || ((String) tested).contains(containedTest);
+    }
+    private static boolean checkInstance(Object o) {
+        return o instanceof String || o == null;
+    }
+    //для строки метод checkRequired переопределен, потому что пустая строка тоже не должна проходить условие required
+    private boolean checkRequired(Object tested) {
+        return tested != null && !tested.toString().isEmpty();
     }
 }
