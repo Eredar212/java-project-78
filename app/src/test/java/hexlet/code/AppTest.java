@@ -4,6 +4,7 @@ import hexlet.code.schemas.BaseSchema;
 import hexlet.code.schemas.MapSchema;
 import hexlet.code.schemas.NumberSchema;
 import hexlet.code.schemas.StringSchema;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -12,40 +13,49 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AppTest {
+    private static Validator v;
+
+    @BeforeAll
+    static void validatorInit() {
+        v = new Validator();
+    }
+
     @Test
     void simpleTestString() {
-        Validator v = new Validator();
-
         StringSchema schema = v.string();
-
-// Пока не вызван метод required(), null и пустая строка считаются валидным
+        // Пока не вызван метод required(), null и пустая строка считаются валидным
         assertThat(schema.isValid("")).isTrue(); // true
         assertThat(schema.isValid(null)).isTrue(); // true
+        assertThat(schema.isValid(5)).isFalse(); // false
+        assertThat(schema.isValid("hexlet")).isTrue(); // true
 
         schema.required();
-
         assertThat(schema.isValid(null)).isFalse(); // false
         assertThat(schema.isValid("")).isFalse(); // false
         assertThat(schema.isValid(5)).isFalse(); // false
-        assertThat(schema.isValid("what does the fox say")).isTrue(); // true
         assertThat(schema.isValid("hexlet")).isTrue(); // true
+
+        schema.minLength(5);
+        assertThat(schema.isValid("hexlet")).isTrue(); // true
+        assertThat(schema.isValid("true")).isFalse(); // false
+
+        schema.minLength(null); //сбрасываем требования к длине
 
         assertThat(schema.contains("wh").isValid("what does the fox say")).isTrue(); // true
         assertThat(schema.contains("what").isValid("what does the fox say")).isTrue(); // true
         assertThat(schema.contains("whatthe").isValid("what does the fox say")).isFalse(); // false
 
         assertThat(schema.isValid("what does the fox say")).isFalse(); // false
-// Здесь уже false, так как добавлена еще одна проверка contains("whatthe")
+        // Здесь уже false, так как добавлена еще одна проверка contains("whatthe")
     }
 
     @Test
     void simpleTestNumber() {
-        Validator v = new Validator();
-
         NumberSchema schema = v.number();
-
-// Пока не вызван метод required(), null считается валидным
+        // Пока не вызван метод required(), null считается валидным
         assertThat(schema.isValid(null)).isTrue(); // true
+        assertThat(schema.isValid("5")).isFalse(); // false
+        assertThat(schema.isValid(-10)).isTrue(); // true
         assertThat(schema.positive().isValid(null)).isTrue(); // true
 
         schema.required();
@@ -54,13 +64,12 @@ public class AppTest {
         assertThat(schema.isValid("5")).isFalse(); // false
         assertThat(schema.isValid(10)).isTrue(); // true
 
-// Потому что ранее мы вызвали метод positive()
+        // Потому что ранее мы вызвали метод positive()
         assertThat(schema.isValid(-10)).isFalse(); // false
-//  Ноль — не положительное число
+        //  Ноль — не положительное число
         assertThat(schema.isValid(0)).isFalse(); // false
 
         schema.range(5, 10);
-
         assertThat(schema.isValid(5)).isTrue(); // true
         assertThat(schema.isValid(10)).isTrue(); // true
         assertThat(schema.isValid(4)).isFalse(); // false
@@ -69,8 +78,6 @@ public class AppTest {
 
     @Test
     void simpleTestMap() {
-        Validator v = new Validator();
-
         MapSchema schema = v.map();
 
         assertThat(schema.isValid(null)).isTrue(); // true
@@ -78,7 +85,8 @@ public class AppTest {
         schema.required();
 
         assertThat(schema.isValid(null)).isFalse(); // false
-        assertThat(schema.isValid(new HashMap())).isTrue(); // true
+        assertThat(schema.isValid(new HashMap<>())).isTrue(); // true
+
         Map<String, String> data = new HashMap<>();
         data.put("key1", "value1");
         assertThat(schema.isValid(data)).isTrue(); // true
@@ -92,26 +100,25 @@ public class AppTest {
 
     @Test
     void mapSchemasShapeTest() {
-        Validator v = new Validator();
 
         MapSchema schema = v.map();
 
-// shape позволяет описывать валидацию для значений каждого ключа объекта Map
-// Создаем набор схем для проверки каждого ключа проверяемого объекта
-// Для значения каждого ключа - своя схема
+        // shape позволяет описывать валидацию для значений каждого ключа объекта Map
+        // Создаем набор схем для проверки каждого ключа проверяемого объекта
+        // Для значения каждого ключа - своя схема
         Map<String, BaseSchema> schemas = new HashMap<>();
 
-// Определяем схемы валидации для значений свойств "name" и "age"
-// Имя должно быть строкой, обязательно для заполнения
+        // Определяем схемы валидации для значений свойств "name" и "age"
+        // Имя должно быть строкой, обязательно для заполнения
         schemas.put("name", v.string().required());
-// Возраст должен быть положительным числом
+        // Возраст должен быть положительным числом
         schemas.put("age", v.number().positive());
 
-// Настраиваем схему `MapSchema`
-// Передаем созданный набор схем в метод shape()
+        // Настраиваем схему `MapSchema`
+        // Передаем созданный набор схем в метод shape()
         schema.shape(schemas);
 
-// Проверяем объекты
+        // Проверяем объекты
         Map<String, Object> human1 = new HashMap<>();
         human1.put("name", "Kolya");
         human1.put("age", 100);

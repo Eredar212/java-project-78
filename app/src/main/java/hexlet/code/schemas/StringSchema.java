@@ -4,7 +4,7 @@ public final class StringSchema extends BaseSchema<StringSchema> {
     private Integer minLength;
     private String containedTest = "";
 
-    public StringSchema minLength(int length) {
+    public StringSchema minLength(Integer length) {
         this.minLength = length;
         needCheckMethods.add("checkMinLength");
         return this;
@@ -16,7 +16,7 @@ public final class StringSchema extends BaseSchema<StringSchema> {
     }
 
     private boolean checkMinLength(Object tested) {
-        return ((String) tested).length() >= this.minLength;
+        return minLength == null || ((String) tested).length() >= this.minLength;
     }
     private boolean checkContains(Object tested) {
         return containedTest.isEmpty() || ((String) tested).contains(containedTest);
