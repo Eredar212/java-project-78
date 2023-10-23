@@ -4,3 +4,5 @@ build:
 	./gradlew clean build
 test_report:
 	./gradlew jacocoTestReport
+validate:
+	./gradlew --console plain jshell

@@ -19,34 +19,31 @@ public class BaseSchema<T> {
     }
 
     public final boolean isValid(Object tested) {
-        //проверяем валидность класса передаваемого объекта, если он не null
-        //если объект не валиден по классу, то смысла в дальнейшей проверки нет
         try {
+            //проверяем валидность класса передаваемого объекта, если он не null
+            //если объект не валиден по классу, то смысла в дальнейшей проверки нет
             Method checkInstanceMethod = this.getClass().getDeclaredMethod("checkInstance", Object.class);
             checkInstanceMethod.setAccessible(true);
             if (!(boolean) checkInstanceMethod.invoke(this, tested)) {
                 return false;
             }
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
 
-        //проверяем условия для объекта
-        if (!needCheckMethods.isEmpty()) {
-            for (String m : needCheckMethods) {
-                Method method = this.getSchemaMethod(m);
-                if (method == null) {
-                    throw new RuntimeException("Unexpected method: " + m);
-                }
-                try {
+            //проверяем условия для объекта
+            if (!needCheckMethods.isEmpty()) {
+                for (String m : needCheckMethods) {
+                    Method method = this.getSchemaMethod(m);
+                    if (method == null) {
+                        throw new RuntimeException("Unexpected method: " + m);
+                    }
                     method.setAccessible(true);
                     if (!(boolean) method.invoke(this, tested)) {
                         return false;
                     }
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
+
                 }
             }
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
         return true;
     }
