@@ -16,10 +16,10 @@ public final class StringSchema extends BaseSchema<StringSchema> {
     }
 
     private boolean checkMinLength(Object tested) {
-        return minLength == null || ((String) tested).length() >= this.minLength;
+        return tested == null || minLength == null || ((String) tested).length() >= this.minLength;
     }
     private boolean checkContains(Object tested) {
-        return containedTest.isEmpty() || ((String) tested).contains(containedTest);
+        return tested == null || containedTest.isEmpty() || ((String) tested).contains(containedTest);
     }
     protected boolean checkInstance(Object o) {
         return o instanceof String || o == null;

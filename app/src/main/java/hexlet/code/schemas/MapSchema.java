@@ -19,10 +19,13 @@ public final class MapSchema extends BaseSchema<MapSchema> {
     }
 
     private boolean checkSizeOf(Object tested) {
-        return sizeof == null || tested == null || ((Map<?, ?>) tested).size() == sizeof;
+        return tested == null || sizeof == null || ((Map<?, ?>) tested).size() == sizeof;
     }
     @SuppressWarnings("unchecked")
     private boolean checkShapeSchemas(Object tested) {
+        if (tested == null) {
+            return true;
+        }
         Map<String, Object> schemas = (Map<String, Object>) tested;
         for (String key : this.shape.keySet()) {
             if (!this.shape.get(key).isValid(schemas.get(key))) {

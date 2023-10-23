@@ -14,6 +14,8 @@ public abstract class BaseSchema<T> {
         return (T) this;
     }
 
+    //простая проверка, актуальна не для всех типов
+    //например, для "Строка" метод переопределен
     private boolean checkRequired(Object tested) {
         return tested != null;
     }
@@ -51,7 +53,7 @@ public abstract class BaseSchema<T> {
         return true;
     }
 
-    //некоторые методы могут быть определены в базовой схеме BaseScheme или выше при расширяемости проекта
+    //некоторые методы могут быть определены в базовой схеме BaseScheme при расширяемости проекта
     //поэтому ищем метод от текущего класса и вверх
     private Method getSchemaMethod(String methodName) {
         Method method = null;

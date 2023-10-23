@@ -21,7 +21,7 @@ public final class NumberSchema extends BaseSchema<NumberSchema> {
         return tested == null || (Integer) tested > 0;
     }
     private boolean checkRange(Object tested) {
-        return (Integer) tested >= minRange && (Integer) tested <= maxRange;
+        return tested == null || ((Integer) tested >= minRange && (Integer) tested <= maxRange);
     }
     protected boolean checkInstance(Object o) {
         return o instanceof Integer || o == null;

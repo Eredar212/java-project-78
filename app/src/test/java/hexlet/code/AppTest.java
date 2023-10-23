@@ -138,5 +138,15 @@ public class AppTest {
         human4.put("name", "Valya");
         human4.put("age", -5);
         assertThat(schema.isValid(human4)).isFalse(); //false
+
+        Map<String, Object> human5 = new HashMap<>();
+        human4.put("name", "Petya");
+        assertThat(schema.isValid(human5)).isFalse(); //false
+
+        Map<String, Object> human6 = new HashMap<>();
+        human6.put("name", "Masha");
+        human6.put("ages", 10);
+        human6.put("title", "tester");
+        assertThat(schema.isValid(human6)).isTrue(); //true
     }
 }
