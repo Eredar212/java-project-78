@@ -53,7 +53,7 @@ var v = new Validator();
     ```sh
     stringSchema.minLength();
     ```
-  *  Содержит текст
+  *  Содержит ***текст***
     ```sh
     stringSchema.contains("текст");
     ```
@@ -66,7 +66,7 @@ var v = new Validator();
     ```sh
     numberSchema.positive();
     ```
-  *  Находится в интервале min max
+  *  Находится в интервале ***min*** ***max***
     ```sh
     numberSchema.range(min, max);
     ```
@@ -75,7 +75,7 @@ var v = new Validator();
     ```sh
     mapSchema.required();
     ```
-  *  Размер равен length
+  *  Размер равен ***length***
     ```sh
     mapSchema.sizeof(length);
     ```
