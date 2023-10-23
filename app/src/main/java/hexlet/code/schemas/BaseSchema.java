@@ -5,11 +5,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseSchema<T> {
+public class BaseSchema<T> {
     protected List<String> needCheckMethods = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
-    public T required() {
+    public final T required() {
         needCheckMethods.add("checkRequired");
         return (T) this;
     }
@@ -18,7 +18,7 @@ public abstract class BaseSchema<T> {
         return tested != null;
     }
 
-    public boolean isValid(Object tested) {
+    public final boolean isValid(Object tested) {
         //проверяем валидность класса передаваемого объекта, если он не null
         //если объект не валиден по классу, то смысла в дальнейшей проверки нет
         try {
