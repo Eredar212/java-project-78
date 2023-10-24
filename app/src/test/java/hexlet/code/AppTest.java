@@ -29,15 +29,16 @@ public class AppTest {
         assertThat(schema.isValid(5)).isFalse(); // false
         assertThat(schema.isValid("hexlet")).isTrue(); // true
 
+        schema.minLength(5);
+        assertThat(schema.isValid("hexlet")).isTrue(); // true
+        assertThat(schema.isValid("true")).isFalse(); // false
+        assertThat(schema.isValid(null)).isTrue(); // true
+
         schema.required();
         assertThat(schema.isValid(null)).isFalse(); // false
         assertThat(schema.isValid("")).isFalse(); // false
         assertThat(schema.isValid(5)).isFalse(); // false
         assertThat(schema.isValid("hexlet")).isTrue(); // true
-
-        schema.minLength(5);
-        assertThat(schema.isValid("hexlet")).isTrue(); // true
-        assertThat(schema.isValid("true")).isFalse(); // false
 
         schema.minLength(null); //сбрасываем требования к длине
 
@@ -57,6 +58,9 @@ public class AppTest {
         assertThat(schema.isValid("5")).isFalse(); // false
         assertThat(schema.isValid(-10)).isTrue(); // true
         assertThat(schema.positive().isValid(null)).isTrue(); // true
+
+        schema.range(5, 10);
+        assertThat(schema.isValid(null)).isTrue(); // true
 
         schema.required();
 

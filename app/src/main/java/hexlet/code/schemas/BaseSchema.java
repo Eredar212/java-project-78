@@ -7,10 +7,12 @@ import java.util.Set;
 
 public abstract class BaseSchema<T> {
     protected Set<String> needCheckMethods = new HashSet<>();
+    private boolean needCheckRequired;
 
     @SuppressWarnings("unchecked")
     public final T required() {
         needCheckMethods.add("checkRequired");
+        needCheckRequired = true;
         return (T) this;
     }
 
@@ -25,6 +27,15 @@ public abstract class BaseSchema<T> {
 
     public final boolean isValid(Object tested) {
         try {
+            //Если объект null, то для любого типа он не пройдет проверку на обязательность.
+            //Но для некоторых типов (прим. Строка) null - не единственное ошибочное состояние,
+            //поэтому вызов метода checkRequired не исключаем.
+            //В обратную сторону - если объект null и не указана проверка на обязательность,
+            //то такой объект валидный не зависимо от остальных условий.
+            if (tested == null) {
+                return !needCheckRequired;
+            }
+
             //проверяем валидность класса передаваемого объекта, если он не null
             //если объект не валиден по классу, то смысла в дальнейшей проверки нет
             Method checkInstanceMethod = this.getClass().getDeclaredMethod("checkInstance", Object.class);
