@@ -140,13 +140,19 @@ public class AppTest {
         assertThat(schema.isValid(human4)).isFalse(); //false
 
         Map<String, Object> human5 = new HashMap<>();
-        human4.put("name", "Petya");
+        human5.put("name", "Petya");
         assertThat(schema.isValid(human5)).isFalse(); //false
 
         Map<String, Object> human6 = new HashMap<>();
         human6.put("name", "Masha");
-        human6.put("ages", 10);
+        human6.put("ageS", 10);
         human6.put("title", "tester");
-        assertThat(schema.isValid(human6)).isTrue(); //true
+        assertThat(schema.isValid(human6)).isFalse(); //false
+
+        Map<String, Object> human7 = new HashMap<>();
+        human7.put("name", "Petya");
+        human7.put("age", 15);
+        human7.put("title", "tester2");
+        assertThat(schema.isValid(human7)).isTrue(); //true
     }
 }

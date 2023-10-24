@@ -28,6 +28,9 @@ public final class MapSchema extends BaseSchema<MapSchema> {
         }
         Map<String, Object> schemas = (Map<String, Object>) tested;
         for (String key : this.shape.keySet()) {
+            if (!schemas.containsKey(key)) {
+                return false;
+            }
             if (!this.shape.get(key).isValid(schemas.get(key))) {
                 return false;
             }
