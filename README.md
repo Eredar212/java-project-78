@@ -90,6 +90,40 @@ var v = new Validator();
         ```sh
         mapSchema.shape(schemas);
         ```
+     * >В ПРОЦЕССЕ ВЫПОЛНЕНИЯ ПРОВЕРКИ УЧИТЫВАЕТСЯ НАЛИЧИЕ КАЖДОГО КЛЮЧА ИЗ СХЕМЫ.
+       ПЕРЕДАВАЕМЫЕ ДЛЯ ПРОВЕРКИ ПАРЫ КЛЮЧ-ЗНАЧЕНИЯ, ЧЬИХ КЛЮЧЕЙ НЕТ В СХЕМЕ - ИГНОРИРУЮТСЯ
+       
+Пример: для указанной выше схемы от проверяемого объекта для прохождения валидации требуется ТОЛЬКО:
+1. Наличие ключей ***key1*** и ***key2***
+2. Значение для ***key1*** - Строка, обязательна к заполнению
+3. Значение для ***key2*** - Положительное число
+```
+        Map<String, Object> o = new HashMap<>();
+        o.put("key1", "John");
+        o.put("key2", 5);
+        mapSchema.isValid(o); //=> true
+
+        Map<String, Object> o = new HashMap<>();
+        o.put("key1", "John");
+        o.put("key2", 5);
+        o.put("key3", "value3");
+        mapSchema.isValid(o); //=> true
+
+        Map<String, Object> o = new HashMap<>();
+        o.put("key1", "John");
+        o.put("key2", -5);
+        mapSchema.isValid(o); //=> false, key2 value is not positive
+
+        Map<String, Object> o = new HashMap<>();
+        o.put("key1", "John");
+        mapSchema.isValid(o); //=> false, key2 is not present
+
+        Map<String, Object> o = new HashMap<>();
+        o.put("key1", "John");
+        o.put("key3", 5);
+        mapSchema.isValid(o); //=> false, key2 is not present
+```
+
 #### Выполняем проверку объекта Object
 ```sh
 stringSchema.isValid(Object);
