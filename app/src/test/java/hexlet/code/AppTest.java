@@ -40,14 +40,18 @@ public class AppTest {
         assertThat(schema.isValid(5)).isFalse(); // false
         assertThat(schema.isValid("hexlet")).isTrue(); // true
 
-        schema.minLength(null); //сбрасываем требования к длине
+        schema.minLength(null);
 
+        assertThat(schema.contains(null).isValid("what does the fox say")).isTrue(); // true
+        assertThat(schema.contains("").isValid("what does the fox say")).isTrue(); // true
         assertThat(schema.contains("wh").isValid("what does the fox say")).isTrue(); // true
         assertThat(schema.contains("what").isValid("what does the fox say")).isTrue(); // true
         assertThat(schema.contains("whatthe").isValid("what does the fox say")).isFalse(); // false
 
-        assertThat(schema.isValid("what does the fox say")).isFalse(); // false
         // Здесь уже false, так как добавлена еще одна проверка contains("whatthe")
+        assertThat(schema.contains("what").isValid("what does the fox say")).isFalse(); // false
+        assertThat(schema.isValid("what does the fox say")).isFalse(); // false
+
     }
 
     @Test

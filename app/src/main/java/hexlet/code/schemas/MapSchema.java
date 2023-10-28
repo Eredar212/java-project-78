@@ -3,34 +3,25 @@ package hexlet.code.schemas;
 import java.util.Map;
 
 public final class MapSchema extends BaseSchema<MapSchema> {
-    private Integer sizeof;
-    @SuppressWarnings("rawtypes")
-    private Map<String, BaseSchema> shape;
-
-    public MapSchema sizeof(int size) {
-        sizeof = size;
-        needCheckMethods.add("checkSizeOf");
+    public MapSchema sizeof(Integer size) {
+        validation = validation.and(o -> size == null || ((Map<?, ?>) o).size() == size);
         return this;
     }
-    @SuppressWarnings("rawtypes")
-    public void shape(Map<String, BaseSchema> schemas) {
-        this.shape = schemas;
-        needCheckMethods.add("checkShapeSchemas");
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public MapSchema shape(Map<String, BaseSchema> shape) {
+        validation = validation.and(o -> {
+            Map<String, Object> schemas = (Map<String, Object>) o;
+            for (String key : shape.keySet()) {
+                if (!schemas.containsKey(key) || !shape.get(key).isValid(schemas.get(key))) {
+                    return false;
+                }
+            }
+            return true;
+        });
+        return this;
     }
 
-    private boolean checkSizeOf(Object tested) {
-        return sizeof == null || ((Map<?, ?>) tested).size() == sizeof;
-    }
-    @SuppressWarnings("unchecked")
-    private boolean checkShapeSchemas(Object tested) {
-        Map<String, Object> schemas = (Map<String, Object>) tested;
-        for (String key : this.shape.keySet()) {
-            if (!schemas.containsKey(key) || !this.shape.get(key).isValid(schemas.get(key))) {
-                return false;
-            }
-        }
-        return true;
-    }
     protected boolean checkInstance(Object o) {
         return o instanceof Map || o == null;
     }
