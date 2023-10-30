@@ -11,6 +11,11 @@ public final class NumberSchema extends BaseSchema<NumberSchema> {
         return this;
     }
 
+    @Override
+    protected boolean isEmpty(Object o) {
+        return false;
+    }
+
     protected boolean checkInstance(Object o) {
         return o instanceof Integer || o == null;
     }

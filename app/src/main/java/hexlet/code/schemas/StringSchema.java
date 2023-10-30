@@ -11,6 +11,11 @@ public final class StringSchema extends BaseSchema<StringSchema> {
         return this;
     }
 
+    @Override
+    protected boolean isEmpty(Object o) {
+        return String.valueOf(o).isEmpty();
+    }
+
     protected boolean checkInstance(Object o) {
         return o instanceof String || o == null;
     }

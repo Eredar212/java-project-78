@@ -10,15 +10,11 @@ public abstract class BaseSchema<T> {
     @SuppressWarnings("unchecked")
     public final T required() {
         needCheckRequired = true;
-        validation = validation.and(o -> {
-            //для "Строка" проверяются два условия при required
-            if (this instanceof StringSchema) {
-                return o != null && !o.toString().isEmpty();
-            }
-            return o != null;
-        });
         return (T) this;
     }
+
+    //проверка пустого НЕ null объекта, примеры Строка - "", карта - new HashMap<>()
+    protected abstract boolean isEmpty(Object o);
 
     //в каждом классе расширения должен быть переопределен метод checkInstance
     protected abstract boolean checkInstance(Object o);
@@ -31,7 +27,7 @@ public abstract class BaseSchema<T> {
         //пример без выноски
         //new Validator().string().minLength(5).required().isValid(null);
         //                                                      => Cannot invoke "String.length()" because "o" is null
-        if (tested == null) {
+        if (tested == null || isEmpty(tested)) {
             return !needCheckRequired;
         }
         return validation.test(tested);

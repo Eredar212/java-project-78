@@ -22,6 +22,11 @@ public final class MapSchema extends BaseSchema<MapSchema> {
         return this;
     }
 
+    @Override
+    protected boolean isEmpty(Object o) {
+        return false;
+    }
+
     protected boolean checkInstance(Object o) {
         return o instanceof Map || o == null;
     }
