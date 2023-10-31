@@ -3,14 +3,15 @@ package hexlet.code.schemas;
 import java.util.Map;
 
 public final class MapSchema extends BaseSchema<MapSchema> {
+    //при установке нескольких разных значений, результат всегда будет false
     public MapSchema sizeof(Integer size) {
-        validation = validation.and(o -> size == null || ((Map<?, ?>) o).size() == size);
+        checkList.add(o -> size == null || ((Map<?, ?>) o).size() == size);
         return this;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public MapSchema shape(Map<String, BaseSchema> shape) {
-        validation = validation.and(o -> {
+        checkList.add(o -> {
             Map<String, Object> schemas = (Map<String, Object>) o;
             for (String key : shape.keySet()) {
                 if (!schemas.containsKey(key) || !shape.get(key).isValid(schemas.get(key))) {
@@ -23,11 +24,11 @@ public final class MapSchema extends BaseSchema<MapSchema> {
     }
 
     @Override
-    protected boolean isEmpty(Object o) {
-        return false;
+    protected boolean isNullOrEmpty(Object o) {
+        return o == null;
     }
 
     protected boolean checkInstance(Object o) {
-        return o instanceof Map || o == null;
+        return o instanceof Map;
     }
 }

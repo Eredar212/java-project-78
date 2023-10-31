@@ -1,11 +1,19 @@
 package hexlet.code.schemas;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
 public abstract class BaseSchema<T> {
+    @SuppressWarnings("rawtypes")
+    protected List<Predicate> checkList = new ArrayList<>();
+
     //минимальную проверку на null необходимо сделать вне очереди
     private boolean needCheckRequired;
-    protected Predicate<Object> validation = this::checkInstance;
+
+    public BaseSchema() {
+        checkList.add(this::checkInstance);
+    }
 
     @SuppressWarnings("unchecked")
     public final T required() {
@@ -13,23 +21,19 @@ public abstract class BaseSchema<T> {
         return (T) this;
     }
 
-    //проверка пустого НЕ null объекта, примеры Строка - "", карта - new HashMap<>()
-    protected abstract boolean isEmpty(Object o);
+    protected abstract boolean isNullOrEmpty(Object o);
 
     //в каждом классе расширения должен быть переопределен метод checkInstance
     protected abstract boolean checkInstance(Object o);
 
+    @SuppressWarnings("unchecked")
     public final boolean isValid(Object tested) {
-        //Если объект null и не указана проверка на обязательность - объект валидный не зависимо от остальных условий.
-        //Если объект null и обязательность указана - объект невалидный не зависимо от остальных условий.
-
-        //Вынужденная выноска на случай если схеме проверку required() ставят позже других,
-        //пример без выноски
-        //new Validator().string().minLength(5).required().isValid(null);
-        //                                                      => Cannot invoke "String.length()" because "o" is null
-        if (tested == null || isEmpty(tested)) {
+        // пустой объект проверяется только на условие required, если оно определено
+        if (isNullOrEmpty(tested)) {
             return !needCheckRequired;
         }
-        return validation.test(tested);
+
+        return checkList.stream()
+                .allMatch(o -> o.test(tested));
     }
 }
